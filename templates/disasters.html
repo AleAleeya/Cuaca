@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bencana Alam - Info Cuaca dan Bencana Alam</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Style untuk menampilkan peringatan */
+        .alert {
+            padding: 20px;
+            background-color: #f44336; /* Warna merah untuk peringatan */
+            color: white;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .closebtn {
+            margin-left: 15px;
+            color: white;
+            font-weight: bold;
+            float: right;
+            font-size: 22px;
+            line-height: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .closebtn:hover {
+            color: black;
+        }
+
+        .disaster-container {
+            margin: 20px 0;
+        }
+
+        .city-selector {
+            margin: 20px 0;
+            font-size: 16px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="container">
+            <div class="topbar-content">
+                <h1 class="logo">Cuaca Bencana</h1>
+                <nav class="topbar-nav">
+                    <a href="{{ url_for('home') }}">Dashboard</a>
+                    <a href="{{ url_for('weather') }}">Cuaca</a>
+                    <a href="{{ url_for('disasters') }}">Peringatan Bencana Alam</a>
+                    <a href="{{ url_for('map') }}">Peta</a>
+                </nav>
+                <div class="topbar-actions">
+                    <input type="text" placeholder="Cari...">
+                    <button>Login</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <main class="content">
+            <section id="disasters" class="card">
+                <h2>Peringatan Bencana Alam</h2>
+                <div class="city-selector">
+                    <label for="city">Pilih Kota: </label>
+                    <select id="city" name="city">
+                        <option value="-6.200000,106.816666">Jakarta</option>
+                        <option value="-7.250445,112.768845">Surabaya</option>
+                        <option value="-6.917464,107.619123">Bandung</option>
+                        <option value="-7.797068,110.370529">Yogyakarta</option>
+                        <option value="3.595196,98.672223">Medan</option>
+                        <option value="-0.789275,113.921327">Palembang</option>
+                        <option value="-5.147665,119.432731">Makassar</option>
+                        <option value="-5.147665,119.432731">Semarang</option>
+                        <!-- Tambahkan kota besar lainnya di sini -->
+                    </select>
+                </div>
+                <div id="alert-container"></div>
+                <div id="disasters-info" class="disaster-container"></div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Info Cuaca & Bencana Alam. Semua hak cipta dilindungi.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const citySelector = document.getElementById('city');
+
+            async function getWeatherAlerts(lat, lon) {
+                const alertContainer = document.getElementById('alert-container');
+                alertContainer.innerHTML = '<p>Loading alerts...</p>';
+
+                try {
+                    // Panggil API One Call dari OpenWeatherMap
+                    const response = await fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,daily&appid=YOUR_API_KEY&lang=id`);
+                    const data = await response.json();
+
+                    // Cek apakah ada peringatan di data
+                    if (!data.alerts || data.alerts.length === 0) {
+                        alertContainer.innerHTML = '<div class="alert">Tidak ada peringatan bencana alam terbaru.</div>';
+                        return;
+                    }
+
+                    // Tampilkan peringatan bencana alam
+                    const alerts = data.alerts.map(alert => {
+                        return `
+                            <div class="alert">
+                                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                                <strong>${alert.event}:</strong> ${alert.description} (${new Date(alert.start * 1000).toLocaleString()} - ${new Date(alert.end * 1000).toLocaleString()})
+                            </div>
+                        `;
+                    }).join('');
+                    alertContainer.innerHTML = alerts;
+
+                } catch (error) {
+                    alertContainer.innerHTML = '<div class="alert">Gagal memuat data peringatan.</div>';
+                    console.error('Error fetching weather alerts:', error);
+                }
+            }
+
+            // Panggil fungsi untuk memuat data peringatan bencana alam saat pertama kali dimuat
+            const initialCity = citySelector.value.split(',');
+            getWeatherAlerts(initialCity[0], initialCity[1]);
+
+            // Panggil fungsi setiap kali pengguna memilih kota yang berbeda
+            citySelector.addEventListener('change', function() {
+                const [lat, lon] = this.value.split(',');
+                getWeatherAlerts(lat, lon);
+            });
+        });
+    </script>
+</body>
+</html>

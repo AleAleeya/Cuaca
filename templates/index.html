@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Info Cuaca dan Bencana Alam</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header class="topbar">
+        <div class="container">
+            <div class="topbar-content">
+                <h1 class="logo">Cuaca Bencana</h1>
+                <nav class="topbar-nav">
+                    <a href="{{ url_for('home') }}">Dashboard</a>
+                    <a href="{{ url_for('weather') }}">Cuaca</a>
+                    <a href="{{ url_for('disasters') }}">Peringatan Bencana Alam</a>
+                    <a href="{{ url_for('map') }}">Peta</a>
+                </nav>
+                <div class="topbar-actions">
+                    <input type="text" placeholder="Cari...">
+                    <button>Login</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <main class="content">
+            <section id="dashboard" class="card">
+                <h2>Dashboard</h2>
+                <div class="dashboard-info">
+                    <div class="chart-container">
+                        <canvas id="weatherChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="disasterChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Info Cuaca & Bencana Alam. Semua hak cipta dilindungi.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Weather Chart
+        const weatherCtx = document.getElementById('weatherChart').getContext('2d');
+        new Chart(weatherCtx, {
+            type: 'line',
+            data: {
+                labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+                datasets: [{
+                    label: 'Suhu (°C)',
+                    data: [22, 24, 23, 26, 28, 27, 29],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Disaster Chart
+        const disasterCtx = document.getElementById('disasterChart').getContext('2d');
+        new Chart(disasterCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Gempa', 'Banjir', 'Kebakaran', 'Topan', 'Tsunami'],
+                datasets: [{
+                    label: 'Jumlah Kasus',
+                    data: [5, 10, 7, 3, 2],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

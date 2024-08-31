@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Perubahan Iklim - Info Cuaca dan Bencana Alam</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="container">
+            <div class="topbar-content">
+                <h1 class="logo">Cuaca Bencana</h1>
+                <nav class="topbar-nav">
+                    <a href="{{ url_for('home') }}">Dashboard</a>
+                    <a href="{{ url_for('weather') }}">Cuaca</a>
+                    <a href="{{ url_for('disasters') }}">Peringatan Bencana Alam</a>
+                    <a href="{{ url_for('map') }}">Peta</a>
+                </nav>
+                <div class="topbar-actions">
+                    <input type="text" placeholder="Cari...">
+                    <button>Login</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <main class="content">
+            <section id="climate-map" class="card">
+                <h2>Peta Perubahan Iklim</h2>
+                <div id="map"></div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Info Cuaca & Bencana Alam. Semua hak cipta dilindungi.</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Inisialisasi peta dan atur posisinya di Indonesia
+        var map = L.map('map').setView([-2.548926, 118.0148634], 5);
+
+        // Tambahkan tile layer ke peta
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Data perubahan iklim dalam format GeoJSON
+        var climateData = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "city": "Jakarta",
+                        "temperature_increase": "2°C",
+                        "sea_level_rise": "20 cm",
+                        "precipitation_change": "+10%"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [106.816666, -6.200000]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "city": "Surabaya",
+                        "temperature_increase": "1.8°C",
+                        "sea_level_rise": "18 cm",
+                        "precipitation_change": "+8%"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [112.768845, -7.250445]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "city": "Bandung",
+                        "temperature_increase": "1.6°C",
+                        "sea_level_rise": "16 cm",
+                        "precipitation_change": "+9%"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [107.619123, -6.917464]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "city": "Yogyakarta",
+                        "temperature_increase": "1.5°C",
+                        "sea_level_rise": "15 cm",
+                        "precipitation_change": "+7%"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [110.370529, -7.797068]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "city": "Medan",
+                        "temperature_increase": "1.7°C",
+                        "sea_level_rise": "17 cm",
+                        "precipitation_change": "+11%"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [98.672223, 3.595196]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "city": "Palembang",
+                        "temperature_increase": "1.4°C",
+                        "sea_level_rise": "14 cm",
+                        "precipitation_change": "+6%"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [113.921327, -0.789275]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "city": "Semarang",
+                        "temperature_increase": "1.3°C",
+                        "sea_level_rise": "13 cm",
+                        "precipitation_change": "+5%"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [110.4203, -6.9667]
+                    }
+                }
+                // Tambahkan data kota besar lainnya di sini jika diperlukan
+            ]
+        };
+
+        // Tambahkan data perubahan iklim ke peta
+        L.geoJSON(climateData, {
+            onEachFeature: function(feature, layer) {
+                layer.bindPopup(
+                    "<strong>" + feature.properties.city + "</strong><br>" +
+                    "Kenaikan Suhu: " + feature.properties.temperature_increase + "<br>" +
+                    "Kenaikan Permukaan Laut: " + feature.properties.sea_level_rise + "<br>" +
+                    "Perubahan Curah Hujan: " + feature.properties.precipitation_change
+                );
+            },
+            pointToLayer: function(feature, latlng) {
+                return L.circleMarker(latlng, {
+                    radius: 8,
+                    fillColor: "#FF5733",
+                    color: "#000",
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                });
+            }
+        }).addTo(map);
+    </script>
+</body>
+</html>

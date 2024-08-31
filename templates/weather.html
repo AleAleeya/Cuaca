@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuaca - Info Cuaca dan Bencana Alam</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header class="topbar">
+        <div class="container">
+            <div class="topbar-content">
+                <h1 class="logo">Cuaca Bencana</h1>
+                <nav class="topbar-nav">
+                    <a href="{{ url_for('home') }}">Dashboard</a>
+                    <a href="{{ url_for('weather') }}">Cuaca</a>
+                    <a href="{{ url_for('disasters') }}">Peringatan Bencana Alam</a>
+                    <a href="{{ url_for('map') }}">Peta</a>
+                </nav>
+                <div class="topbar-actions">
+                    <input type="text" placeholder="Cari...">
+                    <button>Login</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <main class="content">
+            <section id="weather" class="card">
+                <h2>Informasi Cuaca</h2>
+                <div id="weather-info"></div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Info Cuaca & Bencana Alam. Semua hak cipta dilindungi.</p>
+        </div>
+    </footer>
+
+    <script>
+        const apiKey = '526340c1bfe29df166eb1dd03e7e3a11';
+        const cities = [
+            'Jakarta,ID',
+            'Surabaya,ID',
+            'Bandung,ID',
+            'Medan,ID',
+            'Semarang,ID',
+            'Yogyakarta,ID',
+            'Makassar,ID',
+            'Palembang,ID'
+        ];
+
+        async function getWeatherData() {
+            const weatherInfo = document.getElementById('weather-info');
+            weatherInfo.innerHTML = '<p>Loading...</p>';
+
+            try {
+                const responses = await Promise.all(cities.map(city => 
+                    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`)
+                ));
+                const data = await Promise.all(responses.map(res => res.json()));
+
+                weatherInfo.innerHTML = data.map(city => `
+                    <div class="weather-card">
+                        <h3>${city.name}</h3>
+                        <p>Suhu: ${city.main.temp}°C</p>
+                        <p>Kelembapan: ${city.main.humidity}%</p>
+                        <p>Cuaca: ${city.weather[0].description}</p>
+                    </div>
+                `).join('');
+            } catch (error) {
+                weatherInfo.innerHTML = '<p>Error loading weather data.</p>';
+                console.error(error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', getWeatherData);
+    </script>
+</body>
+</html>

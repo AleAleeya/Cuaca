@@ -1,0 +1,176 @@
+/* styles.css */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: #333;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Topbar */
+.topbar {
+    background: #4267B2; /* Warna biru khas Facebook */
+    color: #fff;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.topbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+}
+
+.topbar-nav {
+    display: flex;
+    gap: 1rem;
+}
+
+.topbar-nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.topbar-nav a:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.topbar-actions input {
+    padding: 0.5rem;
+    border: none;
+    border-radius: 4px;
+}
+
+.topbar-actions button {
+    background: #fff;
+    color: #4267B2;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.topbar-actions button:hover {
+    background: #e9ecef;
+}
+
+/* Main Layout */
+.main-layout {
+    display: flex;
+    min-height: 100vh;
+    margin-top: 60px; /* adjust if needed */
+}
+
+/* Content */
+.content {
+    flex: 1;
+    padding: 2rem;
+    margin: 0 auto;
+}
+
+/* Card */
+.card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+h2 {
+    border-bottom: 2px solid #4267B2;
+    padding-bottom: 0.5rem;
+}
+
+/* Dashboard */
+.dashboard-info {
+    display: flex;
+    gap: 1rem;
+}
+
+.weather-card, .disaster-card {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex: 1;
+}
+
+/* Footer */
+.footer {
+    background: #f1f1f1;
+    color: #333;
+    text-align: center;
+    padding: 1rem;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Chart Container */
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    margin-bottom: 2rem;
+}
+
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Peta */
+#map {
+    height: 100vh;
+    width: 100%;
+}
+
+/* Weather Card */
+.weather-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #f9f9f9;
+}
+
+.weather-card h3 {
+    margin-top: 0;
+}
+
+.weather-card p {
+    margin: 5px 0;
+}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Info Cuaca dan Bencana Alam</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        #temperature-chart {
+            max-width: 800px;
+            margin: 50px auto;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="container">
+            <div class="topbar-content">
+                <h1 class="logo">CuacaBencana</h1>
+                <nav class="topbar-nav">
+                    <a href="{{ url_for('home') }}">Dashboard</a>
+                    <a href="{{ url_for('weather') }}">Cuaca</a>
+                    <a href="{{ url_for('disasters') }}">Bencana Alam</a>
+                    <a href="{{ url_for('map') }}">Peta</a>
+                </nav>
+                <div class="topbar-actions">
+                    <input type="text" placeholder="Cari...">
+                    <button>Login</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <main class="content">
+            <section id="dashboard">
+                <h2>Dashboard Cuaca</h2>
+                <canvas id="temperature-chart"></canvas>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Info Cuaca & Bencana Alam. Semua hak cipta dilindungi.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Data suhu rata-rata selama seminggu terakhir (dalam derajat Celsius)
+        var temperatureData = [29.5, 30.2, 28.9, 27.8, 29.1, 30.0, 28.5]; // Ganti dengan data API jika perlu
+        var labels = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+
+        fetch('https://api.openweathermap.org/data/2.5/onecall?lat=-6.200000&lon=106.816666&exclude=current,minutely,hourly,alerts&units=metric&appid=YOUR_API_KEY')
+    .then(response => response.json())
+    .then(data => {
+        var dailyTemperatures = data.daily.map(day => day.temp.day);
+        temperatureChart.data.datasets[0].data = dailyTemperatures;
+        temperatureChart.update();
+    });
+
+
+        // Inisialisasi chart suhu
+        var ctx = document.getElementById('temperature-chart').getContext('2d');
+        var temperatureChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Rata-rata Suhu Harian (°C)',
+                    data: temperatureData,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Rata-rata Suhu Harian dalam Seminggu Terakhir'
+                    },
+                    legend: {
+                        display: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
